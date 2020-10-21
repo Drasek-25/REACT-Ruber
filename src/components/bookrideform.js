@@ -1,14 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { func } from 'prop-types';
 import carIcon from '../images/car-icon.png';
 
-const BookRideForm = () => {
+const BookRideForm = ({ submitNewRide, rideData }) => {
+    const initialForm = {
+        firstName: '',
+        lastName: '',
+        pickupLocation: '',
+        dropoffLocation: ''
+    }
+    const [form, setForm] = useState(initialForm)
 
-    // 1. Create and initialize state variable for form data.
-    // 2. Implement two-way binding on form inputs.
-    // 3. Implement an onSubmit function for the form to call
-    //    addRide function passed in as a prop. Then clear
-    //    the form.
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value })
+    }
+    const getDate = () => {
+        const d = new Date();
+        const month = d.getMonth() + 1;
+        const day = d.getDate();
+        const year = d.getFullYear();
+        return `${month}/${day}/${year}`;
+    }
+    //preventDefault is being used as a crutch
+    //this makes it so the entire page doesnt
+    //refresh on submit, however it allows and 
+    //empty form to be submitted.
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        submitNewRide(
+            {
+                ...form,
+                id: rideData.length + 1,
+                date: getDate(),
+                rideLength: Math.floor(Math.random() * 50) + 3
+            }
+        );
+        setForm(initialForm)
+    }
 
 
     return (
@@ -18,24 +46,59 @@ const BookRideForm = () => {
                 <h1 id='form-title'>Book Ride</h1>
             </div>
             <div id='form-content'>
-                <form id='form-inner-content'>
+                <form id='form-inner-content' onSubmit={handleSubmit}>
                     <div className='form-group'>
                         <label htmlFor='first-name'>First Name</label>
-                        <input placeholder="Enter your First Name" type='text' className='form-control input-form' name='firstName' id='first-name' required />
+                        <input
+                            placeholder="Enter your First Name"
+                            type='text'
+                            className='form-control input-form'
+                            name='firstName'
+                            id='first-name'
+                            value={form.firstName}
+                            onChange={handleChange}
+                            required />
                     </div>
                     <div className='form-group'>
                         <label htmlFor='last-name'>Last Name</label>
-                        <input placeholder="Enter your Last Name" type='text' className='form-control input-form' name='lastName' id='last-name' required />
+                        <input
+                            placeholder="Enter your Last Name"
+                            type='text'
+                            className='form-control input-form'
+                            name='lastName'
+                            id='last-name'
+                            value={form.lastName}
+                            onChange={handleChange}
+                            required />
                     </div>
                     <div className='form-group'>
                         <label htmlFor='pick-up'>Pick Up</label>
-                        <input placeholder="Enter your Pickup Location" type='text' className='form-control input-form' name='pickup' id='pick-up' required />
+                        <input
+                            placeholder="Enter your Pickup Location"
+                            type='text'
+                            className='form-control input-form'
+                            name='pickupLocation'
+                            id='pick-up'
+                            value={form.pickupLocation}
+                            onChange={handleChange}
+                            required />
                     </div>
                     <div className='form-group'>
                         <label htmlFor='drop-off'>Drop Off</label>
-                        <input placeholder="Enter your Drop Off Location" type='text' className='form-control input-form' name='dropoff' id='drop-off' required />
+                        <input
+                            placeholder="Enter your Drop Off Location"
+                            type='text'
+                            className='form-control input-form'
+                            name='dropoffLocation'
+                            id='drop-off'
+                            value={form.dropoffLocation}
+                            onChange={handleChange}
+                            required />
                     </div>
-                    <button type='submit' className='btn btn-primary submit-button'>Submit</button>
+                    <button
+                        className='btn btn-primary submit-button'
+                        onClick={(e) => handleSubmit(e)}
+                    >Submit</button>
                 </form>
             </div>
         </div>
@@ -44,7 +107,7 @@ const BookRideForm = () => {
 
 BookRideForm
     .propTypes = {
-        addRide: func
-    };
+    addRide: func
+};
 
 export default BookRideForm;
